@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
+  m_Name: library_planets
+  m_EditorClassIdentifier: 
+  m_GuidLow: 4710315710973887043
+  m_GuidHigh: 10165718733817798799
+  m_DataStore:
+    m_Storage: []
+  m_Images:
+  - m_SerializedGuid:
+      m_GuidLow: 4740600446846777271
+      m_GuidHigh: 6773803186183743645
+    m_SerializedTextureGuid:
+      m_GuidLow: 16430375383252511295
+      m_GuidHigh: 13287230787625629065
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: "Merc\xFArio"
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5693884893481821291
+      m_GuidHigh: 9663323627937060003
+    m_SerializedTextureGuid:
+      m_GuidLow: 14435381835983728192
+      m_GuidHigh: 12488147050116821162
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: "V\xEAnus"
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5350493745497323238
+      m_GuidHigh: 6233185090838111618
+    m_SerializedTextureGuid:
+      m_GuidLow: 13512172374588017597
+      m_GuidHigh: 7928440780667548840
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: Terra
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5466835284061551042
+      m_GuidHigh: 8204803885999605172
+    m_SerializedTextureGuid:
+      m_GuidLow: 2536795592492368687
+      m_GuidHigh: 17344634758764034346
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: Marte
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5618840677604731897
+      m_GuidHigh: 14505152503823780260
+    m_SerializedTextureGuid:
+      m_GuidLow: 18240801486138299159
+      m_GuidHigh: 15508273771384582089
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: "J\xFApiter"
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5227773350782541604
+      m_GuidHigh: 4627967489421016449
+    m_SerializedTextureGuid:
+      m_GuidLow: 1685512999150861102
+      m_GuidHigh: 3422318767516712056
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: Saturno
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 4858677066635766738
+      m_GuidHigh: 367205197894779801
+    m_SerializedTextureGuid:
+      m_GuidLow: 12462651638436806028
+      m_GuidHigh: 9384235528689792889
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: Urano
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5500630388949893396
+      m_GuidHigh: 7378481858726677127
+    m_SerializedTextureGuid:
+      m_GuidLow: 14543345998663937573
+      m_GuidHigh: 5963701820593009259
+    m_Size: {x: 0, y: 0}
+    m_SpecifySize: 0
+    m_Name: Netuno
+    m_Texture: {fileID: 0}

@@ -14,8 +14,10 @@ public class ARManager : MonoBehaviour
     [BoxGroup("")][SerializeField] private Transform _indicator;
     [BoxGroup("")][SerializeField] private float _interactionRotationSpeed = 1f;
 
+
     private List<ARModel> _intantiatedModels = new List<ARModel>();
 
+    private bool _scanMode = false;
     private bool _deleteMode = false;
     private bool _spawnIndicatorActive = false;
 
@@ -27,7 +29,10 @@ public class ARManager : MonoBehaviour
 
     private Camera _camera;
 
+    private ARPlaneManager _planeManager;
     private ARRaycastManager _raycastManager;
+    private ARTrackedImageManager _trackedImageManager;
+
 
     public ARModel[] Models => _models;
     public ARModel Selecting => _selecting;
@@ -37,12 +42,14 @@ public class ARManager : MonoBehaviour
     private void Awake()
     {
         _camera = Camera.main;
+        _planeManager = FindAnyObjectByType<ARPlaneManager>();
         _raycastManager = FindAnyObjectByType<ARRaycastManager>();
+        _trackedImageManager = FindAnyObjectByType<ARTrackedImageManager>();
+
+        _trackedImageManager.enabled = false;
 
         _indicatorScale = _indicator.localScale;
         _indicator.DOScale(0, 0);
-
-        Screen.SetResolution(Screen.width/2, Screen.height/2, true);
 
         Application.targetFrameRate = 30;
     }
@@ -68,6 +75,70 @@ public class ARManager : MonoBehaviour
     public void ToggleDeleteMode(bool value = false)
     {
         _deleteMode = value;
+    }
+
+    public void ToggleScanMode(bool value = false)
+    {
+        _scanMode = value;
+
+        _selecting = null;
+
+        _raycastManager.enabled = !_scanMode;
+        _planeManager.enabled = !_scanMode;
+
+        _trackedImageManager.enabled = _scanMode;
+
+        DOTween.Kill(_indicator);
+        _spawnIndicatorActive = false;
+        _indicator.DOScale(0, .25f).SetEase(Ease.InOutSine);
+    }
+
+    private ARModel _trackedModel;
+    public void UpdateImageTracking(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
+    {
+        if (!_scanMode)
+            return;
+
+        foreach (ARTrackedImage image in eventArgs.added)
+        {
+            if (image.trackingState == TrackingState.Tracking)
+            {
+                if (_trackedModel == null)
+                {
+                    foreach (ARModel model in _models)
+                    {
+                        if (model.Name == image.referenceImage.name)
+                        {
+                            _trackedModel = Instantiate(model, image.transform.position, image.transform.rotation);
+                            _trackedModel.transform.SetPositionAndRotation(image.transform.position, image.transform.rotation);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (image.referenceImage.name != _trackedModel.Name)
+                    {
+                        _trackedModel.Show(false);
+                        _trackedModel = null;
+                        return;
+                    }
+
+                    _trackedModel.transform.SetPositionAndRotation(image.transform.position, image.transform.rotation);
+
+                }
+
+                return;
+            }
+
+            if (image.trackingState == TrackingState.Limited || image.trackingState == TrackingState.None)
+            {
+                _trackedModel.Show(false);
+                _trackedModel = null;
+            }
+        }
+
+
     }
 
     private void UpdateIndicator()
@@ -207,7 +278,7 @@ public class ARManager : MonoBehaviour
 
                 float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-                Vector3 newScale = _interacting.transform.localScale - (Vector3.one * deltaMagnitudeDiff * 0.01f)/5;
+                Vector3 newScale = _interacting.transform.localScale - (Vector3.one * deltaMagnitudeDiff * 0.01f) / 5;
                 newScale = Vector3.Max(newScale, Vector3.one * 0.1f); // Prevent scaling too small
                 newScale = Vector3.Min(newScale, Vector3.one * 10f); // Prevent scaling too large
 

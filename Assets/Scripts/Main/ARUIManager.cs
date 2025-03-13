@@ -4,6 +4,7 @@ using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -18,8 +19,11 @@ public class ARUIManager : MonoBehaviour
     [BoxGroup("Texts")] public TextMeshProUGUI _modeText;
     [BoxGroup("Texts")] public TextMeshProUGUI _hintText;
 
+    [BoxGroup("Buttons")] public Button _backButton;
     [BoxGroup("Buttons")] public Button _addModelButton;
     [BoxGroup("Buttons")] public Button _removeModelButton;
+    [BoxGroup("Buttons")] public Button _scanModelButton;
+
     [BoxGroup("Buttons")] public Button _exitModeButton;
 
     [BoxGroup("Models Menu")] public Transform _modelsMenu;
@@ -38,7 +42,9 @@ public class ARUIManager : MonoBehaviour
         _arManager = ARManager.Instance;
 
         _addModelButton.onClick.AddListener(ShowModelsMenu);
+        _backButton.onClick.AddListener(BackClicked);
         _removeModelButton.onClick.AddListener(() => DeleteClicked());
+        _scanModelButton.onClick.AddListener(() => ScanClicked());
         _exitModeButton.onClick.AddListener(() => ExitModeClicked());
 
         _bottomBar.DOFade(1, .25f).SetEase(Ease.InOutSine);
@@ -49,7 +55,7 @@ public class ARUIManager : MonoBehaviour
 
         _removeModelButton.gameObject.SetActive(false);
 
-        ShowHint(true, "Clique no botão na parte inferior da tela, para abrir o menu de modelos");
+        ShowHint(true, "Selecione o modo de interação, utilizando os botões na parte inferior da tela");
     }
 
     private void ShowModelsMenu()
@@ -83,6 +89,23 @@ public class ARUIManager : MonoBehaviour
         }
     }
 
+    private void BackClicked()
+    {
+        PopupContent popupContent = new PopupContent("Deseja realmente sair da área de realidade aumentada?", "Sim", "Não", () =>
+        {
+            SceneManager.LoadScene("scene_menu");
+        });
+        PopupsManager.ShowPopup(popupContent);
+    }
+
+    private void ScanClicked()
+    {
+        ShowHint(true, "Aponte a câmera para a imagem do modelo que deseja adicionar");
+        ShowMode(true, "Escaneando");
+
+        _arManager.ToggleScanMode(true);
+    }
+
     private void SelectModel(ARModel model)
     {
         _arManager.SelectModel(model);
@@ -104,6 +127,7 @@ public class ARUIManager : MonoBehaviour
     private void ExitModeClicked()
     {
         _arManager.SelectModel(null);
+        _arManager.ToggleScanMode(false);
         _arManager.ToggleDeleteMode(false);
 
         ShowMode(false, "");

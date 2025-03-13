@@ -27,7 +27,11 @@ public class ARModel : MonoBehaviour
     public void Show(bool show)
     {
         transform.GetChild(0).DOLocalMoveY(.15f, .75f).SetEase(Ease.InOutSine);
-        transform.DOScale(show ? Vector3.one : Vector3.zero, .75f).SetEase(Ease.InOutSine);
+        transform.DOScale(show ? Vector3.one : Vector3.zero, .75f).SetEase(Ease.InOutSine).OnComplete(() =>
+        {
+            if (!show)
+                Destroy(gameObject);
+        });
     }
 
     private void Update()

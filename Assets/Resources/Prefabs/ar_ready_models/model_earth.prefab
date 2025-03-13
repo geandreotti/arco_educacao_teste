@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 893903750140132505}
   - component: {fileID: 6462935801935721802}
   m_Layer: 8
-  m_Name: Earth
+  m_Name: planet
   m_TagString: TrackingObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -433,16 +433,16 @@ LODGroup:
   serializedVersion: 2
   m_LocalReferencePoint: {x: 0, y: 0, z: 0}
   m_Size: 4.279999
-  m_FadeMode: 0
+  m_FadeMode: 1
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.29735467
+  - screenRelativeHeight: 0.94324434
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3834334100348507977}
     - renderer: {fileID: 4009609305216874315}
-  - screenRelativeHeight: 0.039855596
+  - screenRelativeHeight: 0.2849088
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3832714622915883633}
@@ -521,7 +521,7 @@ GameObject:
   - component: {fileID: 3825114458835936221}
   - component: {fileID: 3834334100348507977}
   m_Layer: 8
-  m_Name: Earth
+  m_Name: planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -573,7 +573,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 670b7104971d44954831a97e59d835d9, type: 2}
+  - {fileID: 2100000, guid: e7e9b9704b5ec024c85f5b13d5dda4af, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 3825206124625923553}
   - component: {fileID: 3832714622915883633}
   m_Layer: 8
-  m_Name: Earth_Lod
+  m_Name: planet_lod
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5554,7 +5554,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3851420390972523869}
   - {fileID: 1663509080821114820}
@@ -5609,7 +5609,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3906717828208577129
 CanvasRenderer:
@@ -5639,7 +5639,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Terra
+  m_text: "V\xEAnus"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7c3e1f8bc685917409573d6981310750, type: 2}
   m_sharedMaterial: {fileID: -6553155128804945649, guid: 7c3e1f8bc685917409573d6981310750, type: 2}
@@ -5666,11 +5666,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
+  m_fontSize: 23.95
   m_fontSizeBase: 19.22
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
+  m_fontSizeMin: 10
   m_fontSizeMax: 25
   m_fontStyle: 1
   m_HorizontalAlignment: 2
