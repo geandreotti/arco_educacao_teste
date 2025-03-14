@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class MenuController : MonoBehaviour
 {
@@ -31,6 +32,14 @@ public class MenuController : MonoBehaviour
 
         _ARButton.onClick.AddListener(ARButtonClicked);
         _exitButton.onClick.AddListener(ExitButtonClicked);
+
+        _logo.GetComponent<Image>().DOFade(1, 1f).SetEase(Ease.InOutSine).OnComplete(async() =>
+        {
+            _ARButton.GetComponent<CanvasGroup>().DOFade(1, 1f).SetEase(Ease.InOutSine);
+            await Task.Delay(500);
+            _exitButton.GetComponent<CanvasGroup>().DOFade(1, .1f).SetEase(Ease.InOutSine);
+        });
+
     }
 
     private void ARButtonClicked()

@@ -19,6 +19,7 @@ public class ARUIManager : MonoBehaviour
     [BoxGroup("Texts")] public TextMeshProUGUI _modeText;
     [BoxGroup("Texts")] public TextMeshProUGUI _hintText;
 
+
     [BoxGroup("Buttons")] public Button _backButton;
     [BoxGroup("Buttons")] public Button _addModelButton;
     [BoxGroup("Buttons")] public Button _removeModelButton;
@@ -103,6 +104,7 @@ public class ARUIManager : MonoBehaviour
         ShowHint(true, "Aponte a câmera para a imagem do modelo que deseja adicionar");
         ShowMode(true, "Escaneando");
 
+
         _arManager.ToggleScanMode(true);
     }
 
@@ -110,11 +112,10 @@ public class ARUIManager : MonoBehaviour
     {
         _arManager.SelectModel(model);
         HideModelsMenu();
-        ShowHint(true, "Toque na tela para posicionar o modelo selecionado");
+        ShowHint(true, "Aponte para uma superfície plana e toque na tela para posicionar o modelo selecionado");
 
         ShowMode(true, "Posicionando");
 
-        _exitModeButton.gameObject.SetActive(true);
     }
 
     private void DeleteClicked()
@@ -157,6 +158,12 @@ public class ARUIManager : MonoBehaviour
                 _mode.gameObject.SetActive(false);
         });
 
+        _exitModeButton.gameObject.SetActive(show);
+
+        _backButton.image.DOFade(show ? 0 : 1, .25f).SetEase(Ease.InOutSine).OnComplete(() =>
+        {
+            _backButton.gameObject.SetActive(!show);
+        });
     }
 
     public void ShowDeleteButton(bool show)

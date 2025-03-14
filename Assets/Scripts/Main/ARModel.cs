@@ -14,8 +14,6 @@ public class ARModel : MonoBehaviour
     public string Name { get => _name; }
     public Texture2D ModelImage { get => _modelImage; }
 
-    private bool _isDragging = false;
-
     private void Start()
     {
         _indicatorParent = transform.Find("indicator");
@@ -36,11 +34,13 @@ public class ARModel : MonoBehaviour
 
     private void Update()
     {
+        
         Vector3 direction = Camera.main.transform.position - _indicatorParent.position;
-        direction.y = 0; // Keep only the horizontal direction
-        _indicatorParent.rotation = Quaternion.LookRotation(direction);
+        direction.y = 0;
+        _indicatorParent.rotation = Quaternion.LookRotation(-direction);
 
-        Vector3 textDirection = _indicatorText.position - Camera.main.transform.position;
-        _indicatorText.rotation = Quaternion.LookRotation(textDirection);
+        direction = Camera.main.transform.position - _indicatorText.position;
+        _indicatorText.rotation = Quaternion.LookRotation(-direction);
+
     }
 }

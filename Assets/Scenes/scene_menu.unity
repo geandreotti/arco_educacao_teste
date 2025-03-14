@@ -445,7 +445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -764,6 +764,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Realidade aumentada
       objectReference: {fileID: 0}
+    - target: {fileID: 6553884207768089808, guid: 26131285c75f93148a8c6944206ad923, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8686934118160320432, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_Name
       value: button_ar
@@ -798,7 +802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 94.98761
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_LocalPosition.x
@@ -806,7 +810,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_LocalPosition.z
@@ -897,6 +901,10 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 36
       objectReference: {fileID: 0}
+    - target: {fileID: 6553884207768089808, guid: 26131285c75f93148a8c6944206ad923, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8686934118160320432, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_Name
       value: button_exit
@@ -931,7 +939,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 90.90909
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_LocalScale.x
@@ -947,7 +955,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -918.2338
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9203513913461060905, guid: 26131285c75f93148a8c6944206ad923, type: 3}
       propertyPath: m_LocalPosition.z

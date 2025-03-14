@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
@@ -15,7 +16,9 @@ public class ARManager : MonoBehaviour
     [BoxGroup("")][SerializeField] private float _interactionRotationSpeed = 1f;
 
 
-    private List<ARModel> _intantiatedModels = new List<ARModel>();
+    private List<ARModel> _instantiatedModels = new List<ARModel>();
+
+    private bool _hasPlane;
 
     private bool _scanMode = false;
     private bool _deleteMode = false;
@@ -34,22 +37,26 @@ public class ARManager : MonoBehaviour
     private ARTrackedImageManager _trackedImageManager;
 
 
+    private ARModel _trackedModel;
+
     public ARModel[] Models => _models;
     public ARModel Selecting => _selecting;
 
-    public List<ARModel> InstantiatedModels => _intantiatedModels;
+    public List<ARModel> InstantiatedModels => _instantiatedModels;
 
     private void Awake()
     {
+
         _camera = Camera.main;
         _planeManager = FindAnyObjectByType<ARPlaneManager>();
         _raycastManager = FindAnyObjectByType<ARRaycastManager>();
         _trackedImageManager = FindAnyObjectByType<ARTrackedImageManager>();
 
-        _trackedImageManager.enabled = false;
-
         _indicatorScale = _indicator.localScale;
         _indicator.DOScale(0, 0);
+
+        Screen.SetResolution(Mathf.RoundToInt(Screen.width / 1.4f), Mathf.RoundToInt(Screen.height / 1.4f), true);
+
 
         Application.targetFrameRate = 30;
     }
@@ -72,6 +79,50 @@ public class ARManager : MonoBehaviour
         _selecting = model;
     }
 
+    private void CheckSpawn()
+    {
+        if (_selecting == null || !_spawnIndicatorActive)
+            return;
+
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            if (ARUIManager.Instance.IsPointerOverUIObject(Input.GetTouch(0).fingerId))
+                return;
+            else
+                SpawnModel(_selecting, _indicator.position, Quaternion.identity);
+        }
+
+    }
+
+    private ARModel SpawnModel(ARModel model, Vector3 position = default, Quaternion rotation = default)
+    {
+        DOTween.Kill(_indicator);
+        _spawnIndicatorActive = false;
+        _indicator.DOScale(0, .25f).SetEase(Ease.InOutSine);
+
+        ARModel arModel = Instantiate(model, position, rotation);
+
+        _instantiatedModels.Add(arModel);
+
+        if (_selecting != null)
+            ARUIManager.Instance.ShowMode(false, "");
+        ARUIManager.Instance.ShowHint(false, "");
+        ARUIManager.Instance.ShowDeleteButton(_instantiatedModels.Count > 0);
+        _selecting = null;
+
+        return arModel;
+    }
+
+    private void DeleteAllModels()
+    {
+        foreach (ARModel model in _instantiatedModels)
+            model.Show(false);
+
+        _instantiatedModels.Clear();
+
+        ARUIManager.Instance.ShowDeleteButton(false);
+    }
+
     public void ToggleDeleteMode(bool value = false)
     {
         _deleteMode = value;
@@ -86,62 +137,15 @@ public class ARManager : MonoBehaviour
         _raycastManager.enabled = !_scanMode;
         _planeManager.enabled = !_scanMode;
 
-        _trackedImageManager.enabled = _scanMode;
-
         DOTween.Kill(_indicator);
         _spawnIndicatorActive = false;
         _indicator.DOScale(0, .25f).SetEase(Ease.InOutSine);
+
+        if (!_deleteMode)
+            DeleteAllModels();
     }
 
-    private ARModel _trackedModel;
-    public void UpdateImageTracking(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
-    {
-        if (!_scanMode)
-            return;
-
-        foreach (ARTrackedImage image in eventArgs.added)
-        {
-            if (image.trackingState == TrackingState.Tracking)
-            {
-                if (_trackedModel == null)
-                {
-                    foreach (ARModel model in _models)
-                    {
-                        if (model.Name == image.referenceImage.name)
-                        {
-                            _trackedModel = Instantiate(model, image.transform.position, image.transform.rotation);
-                            _trackedModel.transform.SetPositionAndRotation(image.transform.position, image.transform.rotation);
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (image.referenceImage.name != _trackedModel.Name)
-                    {
-                        _trackedModel.Show(false);
-                        _trackedModel = null;
-                        return;
-                    }
-
-                    _trackedModel.transform.SetPositionAndRotation(image.transform.position, image.transform.rotation);
-
-                }
-
-                return;
-            }
-
-            if (image.trackingState == TrackingState.Limited || image.trackingState == TrackingState.None)
-            {
-                _trackedModel.Show(false);
-                _trackedModel = null;
-            }
-        }
-
-
-    }
-
-    private void UpdateIndicator()
+    private async void UpdateIndicator()
     {
         if (_selecting == null)
         {
@@ -158,7 +162,9 @@ public class ARManager : MonoBehaviour
             {
                 DOTween.Kill(_indicator);
                 _indicator.position = _targetIndicatorPosition;
-                _indicator.DOScale(_indicatorScale, .25f).SetEase(Ease.InOutSine);
+                _indicator.DOScale(_indicatorScale, .25f).SetEase(Ease.InOutSine).OnComplete(() => { });
+
+                await Task.Delay(250);
                 _spawnIndicatorActive = true;
             }
         }
@@ -175,24 +181,9 @@ public class ARManager : MonoBehaviour
         _indicator.position = _targetIndicatorPosition; //Vector3.Lerp(_indicator.position, _targetIndicatorPosition, Time.deltaTime * 15);
     }
 
-    private void CheckSpawn()
-    {
-        if (_selecting == null)
-            return;
-
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        {
-            if (ARUIManager.Instance.IsPointerOverUIObject(Input.GetTouch(0).fingerId))
-                return;
-            else
-                SpawnModel();
-        }
-
-    }
-
     private void CheckInteraction()
     {
-        if (_intantiatedModels.Count == 0)
+        if (_instantiatedModels.Count == 0)
             return;
 
         if (Input.touchCount > 0)
@@ -203,8 +194,6 @@ public class ARManager : MonoBehaviour
             {
                 if (ARUIManager.Instance.IsPointerOverUIObject(touch.fingerId))
                     return;
-
-
 
                 Ray ray = _camera.ScreenPointToRay(touch.position);
                 RaycastHit hit;
@@ -217,9 +206,14 @@ public class ARManager : MonoBehaviour
                     {
                         if (_deleteMode)
                         {
-                            _intantiatedModels.Remove(model);
-                            Destroy(model.gameObject);
-                            ARUIManager.Instance.ShowDeleteButton(_intantiatedModels.Count > 0);
+                            _instantiatedModels.Remove(model);
+                            model.Show(false);
+                            ARUIManager.Instance.ShowMode(_instantiatedModels.Count != 0, "");
+
+                            if (_instantiatedModels.Count == 0)
+                                ToggleDeleteMode(false);
+
+                            ARUIManager.Instance.ShowDeleteButton(_instantiatedModels.Count > 0);
                         }
                         else
                             SetInteraction(model);
@@ -233,8 +227,6 @@ public class ARManager : MonoBehaviour
     {
         if (model == null)
             return;
-
-        Debug.Log("Interacting with " + model.name);
 
         _interacting = model;
     }
@@ -278,11 +270,11 @@ public class ARManager : MonoBehaviour
 
                 float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-                Vector3 newScale = _interacting.transform.localScale - (Vector3.one * deltaMagnitudeDiff * 0.01f) / 5;
-                newScale = Vector3.Max(newScale, Vector3.one * 0.1f); // Prevent scaling too small
-                newScale = Vector3.Min(newScale, Vector3.one * 10f); // Prevent scaling too large
+                Vector3 targetScale = _interacting.transform.localScale - (Vector3.one * deltaMagnitudeDiff * 0.01f) / 5;
+                targetScale = Vector3.Max(targetScale, Vector3.one * 0.1f);
+                targetScale = Vector3.Min(targetScale, Vector3.one * 10f);
 
-                _interacting.transform.localScale = newScale;
+                _interacting.transform.localScale = Vector3.Lerp(_interacting.transform.localScale, targetScale, Time.deltaTime * 5f);
             }
         }
 
@@ -290,18 +282,80 @@ public class ARManager : MonoBehaviour
             _interacting = null;
     }
 
-    private void SpawnModel()
+
+    #region AR Callbacks
+    public void UpdateImageTracking(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
-        DOTween.Kill(_indicator);
-        _spawnIndicatorActive = false;
-        _indicator.DOScale(0, .25f).SetEase(Ease.InOutSine);
+        if (!_scanMode)
+            return;
 
-        _intantiatedModels.Add(Instantiate(_selecting, _indicator.position, Quaternion.identity));
-        _selecting = null;
+        foreach (ARTrackedImage image in eventArgs.updated)
+        {
+            Debug.LogError(image.referenceImage.name);
 
-        ARUIManager.Instance.ShowMode(false, "");
-        ARUIManager.Instance.ShowHint(false, "");
-        ARUIManager.Instance.ShowDeleteButton(_intantiatedModels.Count > 0);
+            if (image.trackingState == TrackingState.Tracking)
+            {
+                if (_trackedModel == null)
+                {
+                    foreach (ARModel model in _models)
+                    {
+                        if (model.Name == image.referenceImage.name)
+                        {
+                            _trackedModel = SpawnModel(model, image.transform.position, image.transform.rotation);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (image.referenceImage.name != _trackedModel.Name)
+                    {
+                        DeleteAllModels();
+                        return;
+                    }
+
+                    if (image.referenceImage.name == _trackedModel.Name)
+                        _trackedModel.transform.position = Vector3.Lerp(_trackedModel.transform.position, image.transform.position, Time.deltaTime * 15);
+
+                }
+
+                return;
+            }
+
+            if (image.trackingState == TrackingState.None || image.trackingState == TrackingState.Limited)
+            {
+                if (_trackedModel == null || image.referenceImage.name != _trackedModel.Name)
+                    return;
+
+                DeleteAllModels();
+            }
+        }
     }
+
+    public void OnPlaneAdded(ARTrackablesChangedEventArgs<ARPlane> eventArgs)
+    {
+        if (_hasPlane)
+        {
+            foreach (var plane in eventArgs.added)
+            {
+                plane.gameObject.SetActive(true);
+            }
+
+            foreach (var plane in eventArgs.updated)
+            {
+                if (plane.trackingState == TrackingState.Tracking || plane.trackingState == TrackingState.Limited)
+                    plane.gameObject.SetActive(true);
+
+            }
+
+            foreach (var plane in eventArgs.removed)
+            {
+                plane.Value.gameObject.SetActive(false);
+            }
+        }
+
+        _hasPlane = true;
+    }
+    #endregion
 }
 
